@@ -1,0 +1,210 @@
+import pandas as pd
+
+#Dados do DGA, SGA, e WGA
+
+url_1 = ("https://en.wikipedia.org/wiki/Directors_Guild_of_America_Award_for_Outstanding_Directing_%E2%80%93_Feature_Film")
+url_2 = ("https://en.wikipedia.org/wiki/Screen_Actors_Guild_Award_for_Outstanding_Performance_by_a_Male_Actor_in_a_Leading_Role")
+url_3 = ("https://en.wikipedia.org/wiki/Screen_Actors_Guild_Award_for_Outstanding_Performance_by_a_Female_Actor_in_a_Leading_Role")
+url_4 = ("https://en.wikipedia.org/wiki/Writers_Guild_of_America_Award_for_Best_Original_Screenplay")
+
+dados_1 = pd.read_html(url_1)
+dados_2 = pd.read_html(url_2)
+dados_3 = pd.read_html(url_3)
+dados_4 = pd.read_html(url_4)
+
+#Dados do Oscar
+
+
+oscar_1 = ("https://en.wikipedia.org/wiki/Academy_Award_for_Best_Director")
+oscar_2 = ("https://en.wikipedia.org/wiki/Academy_Award_for_Best_Actor")
+oscar_3 = ("https://en.wikipedia.org/wiki/Academy_Award_for_Best_Actress")
+oscar_4 = ("https://en.wikipedia.org/wiki/Academy_Award_for_Best_Original_Screenplay")
+
+dados_5 = pd.read_html(oscar_1)
+dados_6 = pd.read_html(oscar_2)
+dados_7 = pd.read_html(oscar_3)
+dados_8 = pd.read_html(oscar_4)
+
+sag_90 = dados_2[1]
+sag_00 = dados_2[2]
+sag_10 = dados_2[3]
+sag_20 = dados_2[4]
+sag_t = pd.concat([sag_90,sag_00,sag_10,sag_20],ignore_index=True, sort=False)
+sag_tw = sag_t.drop_duplicates(subset=['Year'], keep='first',)
+
+sagw_90 = dados_3[1]
+sagw_00 = dados_3[2]
+sagw_10 = dados_3[3]
+sagw_20 = dados_3[4]
+sagw_t = pd.concat([sagw_90,sagw_00,sagw_10,sagw_20],ignore_index=True, sort=False)
+sagw_tw = sagw_t.drop_duplicates(subset=['Year'], keep='first',)
+
+dga_40 = dados_1[1]
+dga_50 = dados_1[2]
+dga_60 = dados_1[3]
+dga_70 = dados_1[4]
+dga_80 = dados_1[5]
+dga_90 = dados_1[6]
+dga_00 = dados_1[7]
+dga_10 = dados_1[8]
+dga_20 = dados_1[9]
+dga_t = pd.concat([dga_40,dga_50,dga_60,dga_70,dga_80,dga_90,dga_00,dga_10,dga_20],ignore_index=True, sort=False)
+dga_tw = dga_t.drop_duplicates(subset=['Year'], keep='first',)
+
+wga_60 = dados_4 [1]
+wga_70 = dados_4 [2]
+wga_80 = dados_4 [3]
+wga_90 = dados_4 [4]
+wga_00 = dados_4 [5]
+wga_10 = dados_4 [6]
+wga_20 = dados_4 [7]
+wga_t = pd.concat ([wga_60,wga_70,wga_80,wga_90,wga_00,wga_10,wga_20],ignore_index=True, sort=False)
+wga_tw_limpa = wga_t.drop_duplicates(subset=["Film"], keep= False)
+wga_tw = wga_tw_limpa.drop_duplicates(subset =["Year"], keep = "first")
+
+obd_40 = dados_5[4]
+obd_50 = dados_5[5]
+obd_60 = dados_5[6]
+obd_70 = dados_5[7]
+obd_80 = dados_5[8]
+obd_90 = dados_5[9]
+obd_00 = dados_5[10]
+obd_10 = dados_5[11]
+obd_20 = dados_5[12]
+obd_t = pd.concat([obd_40,obd_50,obd_60,obd_70,obd_80,obd_90,obd_00,obd_10,obd_20],ignore_index=True,sort=False)
+obd_tw = obd_t.drop_duplicates(subset=["Year"],keep="first")
+
+obs_40 = dados_8[1]
+obs_50 = dados_8[2]
+obs_60 = dados_8[3]
+obs_70 = dados_8[4]
+obs_80 = dados_8[5]
+obs_90 = dados_8[6]
+obs_00 = dados_8[7]
+obs_10 = dados_8[8]
+obs_20 = dados_8[9]
+obs_t = pd.concat([obs_40,obs_50,obs_60,obs_70,obs_80,obs_90,obs_00,obs_10,obs_20],ignore_index=True,sort=False)
+obs_tw = obs_t.drop_duplicates(subset=["Year"], keep="first")
+
+oba_90 = dados_6[9]
+oba_00 = dados_6[10]
+oba_10 = dados_6[11]
+oba_20 = dados_6[12]
+oba_t = pd.concat([oba_90,oba_00,oba_10,oba_20],ignore_index=True,sort=False)
+oba_tw = oba_t.drop_duplicates(subset=["Year"], keep="first")
+
+obw_90 = dados_7[9]
+obw_00 = dados_7[10]
+obw_10 = dados_7[11]
+obw_20 = dados_7[12]
+obw_t = pd.concat([obw_90,obw_00,obw_10,obw_20],ignore_index=True,sort=False)
+obw_tw = obw_t.drop_duplicates(subset=["Year"], keep="first")
+
+dga_tw["Year"] = [dado.split(" ")[0] for dado in dga_tw.Year]
+obd_tw["Year"] = [dado.split(" ")[0] for dado in obd_tw.Year]
+
+dga_o = dga_tw[:]
+oscar_bd = obd_tw[8:]
+dga_o = dga_o.reset_index()
+comparar_bd = oscar_bd.reset_index()
+comparar_bd['Premio Diretor'] = dga_o['Winners and nominees']
+comparar_bd['Premio Film'] = dga_o['Film']
+comparar_bd.rename(columns = {'Year' : 'Ano','Director(s)':'Diretor premiado pelo Oscar','Film':'Filme','Premio Diretor':'Premiado pelo DGA','Premio Film':'Filme premiado','Ref.':'Test'},  inplace = True)
+#comparar_bd = oscar_bd.drop(columns = ['index'])
+#comparar_bd = oscar_bd.drop(columns = ['Test'])
+comparar_bd["Ano"] = [dado.split(" ")[0] for dado in dga_tw.Year]
+comparar_bd = comparar_bd.drop(columns = ['index'])
+comparar_bd = comparar_bd.drop(columns = ['Test'])
+comparar_bd["Ganhou os dois?"] = comparar_bd['Diretor premiado pelo Oscar'] == comparar_bd['Premiado pelo DGA']
+
+sag_tw["Year"] = [dado.split(" ")[0] for dado in sag_tw.Year]
+saga_h = sag_tw[:]
+oscar_bam = oba_tw[4:]
+saga_h = saga_h.reset_index()
+comparar_bma = oscar_bam.reset_index()
+comparar_bma['Premio ator'] = saga_h['Nominee']
+comparar_bma['Filme premiado'] = saga_h['Film']
+comparar_bma.rename(columns= {'Year' : 'Ano','Actor':'Premiado pelo Oscar','Role(s)':'Papel','Film':'Filme','Premio ator':'Premiado pelo SAGA'}, inplace = True)
+comparar_bma["Ano"] = [dado.split(" ")[0] for dado in comparar_bma.Ano]
+comparar_bma["Premiado pelo Oscar"] =  [dado.split("‡")[0] for dado in comparar_bma["Premiado pelo Oscar"]]
+comparar_bma = comparar_bma.drop(columns = ['index'])
+comparar_bma = comparar_bma.drop(columns = ['Ref.'])
+comparar_bma["Ganhou os dois?"] = comparar_bma['Filme'] == comparar_bma['Filme premiado']
+
+sagw_tw["Year"] = [dado.split(" ")[0] for dado in sagw_tw.Year]
+obw_tw["Year"] = [dado.split(" ")[0] for dado in oba_tw.Year]
+saga_w = sagw_tw[:]
+oscar_baf = obw_tw[4:]
+saga_w = saga_w.reset_index()
+comparar_bfa= oscar_baf.reset_index()
+comparar_bfa['Premio SAGA'] = saga_w['Nominee']
+comparar_bfa['Papel'] = saga_w['Role(s)']
+comparar_bfa['Filme SAGA'] = saga_w['Film']
+comparar_bfa.rename(columns= {'Year' : 'Ano','Actress':'Premiada pelo Oscar','Role(s)':'Papel','Film':'Filme',}, inplace = True)
+comparar_bfa = comparar_bfa.drop(columns = ['index'])
+comparar_bfa = comparar_bfa.drop(columns = ['Ref.'])
+comparar_bfa["Premiada pelo Oscar"] =  [dado.split("‡")[0] for dado in comparar_bfa["Premiada pelo Oscar"]]
+comparar_bfa["Ganhou os dois?"] = comparar_bfa['Filme'] == comparar_bfa['Filme SAGA']
+
+wga_tw["Year"] = [dado.split(" ")[0] for dado in wga_tw.Year]
+obs_tw["Year"] = [dado.split(" ")[0] for dado in obs_tw.Year]
+wga_o = wga_tw[:]
+oscar_w = obs_tw[29:]
+wga_o = wga_o.reset_index()
+comparar_r = oscar_w.reset_index()
+comparar_r['Ganhador do WGA'] = wga_o['Writer(s)']
+comparar_r['Filme ganhador WGA'] = wga_o['Film']
+comparar_r.rename(columns= {'Year' : 'Ano','Nominees':'Premiado(a)(s) pelo Oscar','Film':'Filme',}, inplace = True)
+comparar_r = comparar_r.drop(columns =  ['index'])
+comparar_r = comparar_r.drop(columns =  ['Nominee'])
+comparar_r["Premiado(a)(s) pelo Oscar"] =  [dado.split("‡")[0] for dado in comparar_r["Premiado(a)(s) pelo Oscar"]]
+comparar_r["Ganhador do WGA"] =  [dado.split("±")[0] for dado in comparar_r["Ganhador do WGA"]]
+comparar_r["Filme ganhador WGA"] =  [dado.split("†")[0] for dado in comparar_r["Filme ganhador WGA"]]
+comparar_r["Filme"] = [dado.strip() for dado in comparar_r["Filme"]]
+comparar_r["Filme ganhador WGA"] = [dado.strip() for dado in comparar_r["Filme ganhador WGA"]]
+comparar_r["Ganhou os dois chifres?"] = comparar_r['Filme ganhador WGA'] == comparar_r['Filme']
+
+#Teste com o WGA
+
+associa_wga = pd.DataFrame()
+associa_wga['Ganhou os dois?'] = comparar_r['Ganhou os dois chifres?']
+associa_wga['Venceu o WGA'] = [True for dado in comparar_r['Ganhador do WGA']]
+associa_wga['Venceu o Oscar'] = comparar_r['Filme ganhador WGA'] == comparar_r['Filme']
+associa_wga.describe()
+
+#Teste com o DGA
+
+associa_dga = pd.DataFrame()
+associa_dga['Ganhou os dois?'] = comparar_bd['Ganhou os dois?']
+associa_dga['Venceu o dga'] = [True for dado in comparar_bd['Premiado pelo DGA']]
+associa_dga['Venceu o Oscar'] = comparar_bd['Diretor premiado pelo Oscar'] == comparar_bd['Premiado pelo DGA']
+
+#Teste com o SAGAW
+
+associa_sagaw = pd.DataFrame()
+associa_sagaw['Ganhou os dois?'] = comparar_bfa['Ganhou os dois?']
+associa_sagaw['Ganhou o SAGA'] = [True for dado in comparar_bfa['Filme SAGA']]
+associa_sagaw['Ganhou o Oscar?'] = comparar_bfa['Filme'] == comparar_bfa['Filme SAGA']
+
+#Teste com o SAGAM
+
+associa_sagam = pd.DataFrame()
+associa_sagam['Ganhou os dois?'] = comparar_bma['Ganhou os dois?']
+associa_sagam['Venceu o SAGA'] = [True for dado in comparar_bma['Premiado pelo SAGA']]
+associa_sagam['Venceu o Oscar?'] = comparar_bma['Filme'] == comparar_bma['Filme premiado']
+
+from mlxtend.preprocessing import TransactionEncoder
+from mlxtend.frequent_patterns import apriori, association_rules
+
+freq_items_d = apriori(associa_dga, min_support=0.25, use_colnames=True)
+associations_d = association_rules(freq_items_d, metric="confidence",
+                                 min_threshold=0.5)
+freq_items_w = apriori(associa_wga, min_support=0.25, use_colnames=True)
+associations_w = association_rules(freq_items_w, metric="confidence",
+                                 min_threshold=0.5)
+freq_items_h = apriori(associa_sagam, min_support=0.25, use_colnames=True)
+associations_h = association_rules(freq_items_h, metric="confidence",
+                                 min_threshold=0.5)
+freq_items_m = apriori(associa_sagaw, min_support=0.25, use_colnames=True)
+associations_m = association_rules(freq_items_m, metric="confidence",
+                                 min_threshold=0.5)
